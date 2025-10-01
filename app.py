@@ -73,8 +73,8 @@ with tab1:
 with tab2:
     st.header("ℹ️ Informace o mně")
     st.write("""
-    **Autor:** Jan Novák  
-    **Kontakt:** jan.novak@email.cz  
+    **Autor:** Filip Adámek  
+    **Kontakt:** 277630@vutbr.cz  
     **Použité technologie:**  
     - Python  
     - Streamlit  
