@@ -49,8 +49,9 @@ with tab1:
     jmeno = st.text_input("Vaše jméno")
     kontakt = st.text_input("Kontakt (email)")
 
-    if st.button("Vytvořit PDF"):
+   if st.button("Vytvořit PDF"):
     from io import BytesIO
+
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -68,6 +69,7 @@ with tab1:
     pdf_buffer.seek(0)
 
     st.download_button("📥 Stáhnout PDF", pdf_buffer, file_name="vystup.pdf")
+
 
 with tab2:
     st.header("ℹ️ Informace o mně")
