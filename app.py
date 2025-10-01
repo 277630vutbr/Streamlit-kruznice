@@ -2,36 +2,31 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
 from fpdf import FPDF
-from io import BytesIO
-
-st.set_page_config(page_title="Body na kružnici", layout="centered")
+import io
 
 # ---------- Záložky ----------
-tab1, tab2 = st.tabs(["📊 Úloha", "ℹ️ Informace o mně"])
+tab1, tab2 = st.tabs(["Výpočty kružnice", "Informace o mně"])
 
-# ---------- Záložka 1: Úloha ----------
+# ---------- Záložka 1: Výpočty ----------
 with tab1:
-    st.header("Výpočet a vizualizace bodů na kružnici")
+    st.header("Výpočty bodů na kružnici")
 
-    # Zadání parametrů
-    st.subheader("Zadejte parametry:")
-    stred_input = st.text_input("Střed (x,y):", "0,0")
-    try:
-        stred = tuple(map(float, stred_input.split(",")))
-    except:
-        stred = (0,0)
-        st.warning("Zadejte souřadnice ve formátu x,y")
+    # --- Vstupy ---
+    jmeno = st.text_input("Jméno:", "Filip Adámek")
+    kontakt = st.text_input("Kontakt:", "277630@vutbr.cz")
+    stred_x = st.number_input("Střed X:", value=1.0)
+    stred_y = st.number_input("Střed Y:", value=1.0)
+    stred = (stred_x, stred_y)
+    polomer = st.number_input("Poloměr (m):", value=3.0)
+    pocet_bodu = st.number_input("Počet bodů:", value=20, step=1)
+    barva = st.color_picker("Barva bodů:", "#00fff1")
 
-    polomer = st.number_input("Poloměr kružnice (m):", min_value=0.1, value=5.0)
-    pocet_bodu = st.number_input("Počet bodů:", min_value=1, value=8)
-    barva = st.color_picker("Barva bodů:", "#ff0000")
+    # --- Výpočet bodů ---
+    theta = np.linspace(0, 2*np.pi, pocet_bodu, endpoint=False)
+    x = stred[0] + polomer * np.cos(theta)
+    y = stred[1] + polomer * np.sin(theta)
 
-    # Výpočet bodů
-    angles = np.linspace(0, 2*np.pi, int(pocet_bodu), endpoint=False)
-    x = stred[0] + polomer * np.cos(angles)
-    y = stred[1] + polomer * np.sin(angles)
-
-    # Vykreslení grafu
+    # --- Graf ---
     fig, ax = plt.subplots()
     ax.set_aspect('equal')
     ax.set_xlabel("x (m)")
@@ -44,17 +39,12 @@ with tab1:
     ax.add_artist(kruh)
     st.pyplot(fig)
 
-    # PDF export
-    st.subheader("Export do PDF")
-    jmeno = st.text_input("Vaše jméno:")
-    kontakt = st.text_input("Kontakt (email):")
-
+    # --- PDF tlačítko ---
     if st.button("Vytvořit PDF"):
         pdf = FPDF()
         pdf.add_page()
-        # Přidání TrueType fontu pro české znaky
-        pdf.add_font("Arial", "", "arial.ttf", uni=True)
-        pdf.set_font("Arial", size=12)
+        pdf.add_font("arial", "", "arial.ttf", uni=True)
+        pdf.set_font("arial", size=12)
 
         pdf.cell(200, 10, txt="Výpočty bodů na kružnici", ln=True, align='C')
         pdf.ln(10)
@@ -64,21 +54,28 @@ with tab1:
         pdf.cell(200, 10, txt=f"Poloměr: {polomer} m", ln=True)
         pdf.cell(200, 10, txt=f"Počet bodů: {pocet_bodu}", ln=True)
         pdf.cell(200, 10, txt=f"Barva: {barva}", ln=True)
+        pdf.ln(10)
 
-        # PDF do paměti pomocí fpdf2
+        # --- Graf do PDF ---
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png")
+        buf.seek(0)
+        pdf.image(buf, x=10, y=None, w=pdf.w - 20)  # šířka stránky - okraje
+
         pdf_bytes = bytes(pdf.output(dest="S"))
         st.download_button("📥 Stáhnout PDF", pdf_bytes, file_name="vystup.pdf")
 
 # ---------- Záložka 2: Informace o mně ----------
 with tab2:
-    st.header("ℹ️ Informace o mně")
+    st.header("Informace o mně a použitých technologiích")
     st.write("""
-    **Autor:** Filip Adámek  
+    **Jméno:** Filip Adámek  
     **Kontakt:** 277630@vutbr.cz  
+
     **Použité technologie:**  
-    - Python  
+    - Python 3  
     - Streamlit  
     - Matplotlib  
-    - NumPy  
-    - FPDF2  
+    - Numpy  
+    - fpdf2
     """)
