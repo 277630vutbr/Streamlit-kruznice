@@ -65,12 +65,9 @@ with tab1:
         pdf.cell(200, 10, txt=f"Počet bodů: {pocet_bodu}", ln=True)
         pdf.cell(200, 10, txt=f"Barva: {barva}", ln=True)
 
-        # PDF do paměti
-        pdf_buffer = BytesIO()
-        pdf.output(pdf_buffer)
-        pdf_buffer.seek(0)
-
-        st.download_button("📥 Stáhnout PDF", pdf_buffer, file_name="vystup.pdf")
+        # PDF do paměti pomocí fpdf2
+        pdf_bytes = pdf.output(dest="S").encode("latin1")
+        st.download_button("📥 Stáhnout PDF", pdf_bytes, file_name="vystup.pdf")
 
 # ---------- Záložka 2: Informace o mně ----------
 with tab2:
@@ -83,5 +80,5 @@ with tab2:
     - Streamlit  
     - Matplotlib  
     - NumPy  
-    - FPDF  
+    - FPDF2  
     """)
