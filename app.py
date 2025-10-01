@@ -66,7 +66,7 @@ with tab1:
         pdf.cell(200, 10, txt=f"Barva: {barva}", ln=True)
 
         # PDF do paměti pomocí fpdf2
-        pdf_bytes = pdf.output(dest="S")
+        pdf_bytes = bytes(dest="S")
         st.download_button("📥 Stáhnout PDF", pdf_bytes, file_name="vystup.pdf")
 
 # ---------- Záložka 2: Informace o mně ----------
