@@ -50,24 +50,27 @@ with tab1:
     kontakt = st.text_input("Kontakt (email):")
 
     if st.button("Vytvořit PDF"):
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
-        pdf.cell(200, 10, txt="Výpočty bodů na kružnici", ln=True, align='C')
-        pdf.ln(10)
-        pdf.cell(200, 10, txt=f"Jméno: {jmeno}", ln=True)
-        pdf.cell(200, 10, txt=f"Kontakt: {kontakt}", ln=True)
-        pdf.cell(200, 10, txt=f"Střed: {stred}", ln=True)
-        pdf.cell(200, 10, txt=f"Poloměr: {polomer} m", ln=True)
-        pdf.cell(200, 10, txt=f"Počet bodů: {pocet_bodu}", ln=True)
-        pdf.cell(200, 10, txt=f"Barva: {barva}", ln=True)
+    pdf = FPDF()
+    pdf.add_page()
+    # Přidání TrueType fontu pro české znaky
+    pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+    pdf.set_font("DejaVu", size=12)
 
-        # PDF do paměti
-        pdf_buffer = BytesIO()
-        pdf.output(pdf_buffer)
-        pdf_buffer.seek(0)
+    pdf.cell(200, 10, txt="Výpočty bodů na kružnici", ln=True, align='C')
+    pdf.ln(10)
+    pdf.cell(200, 10, txt=f"Jméno: {jmeno}", ln=True)
+    pdf.cell(200, 10, txt=f"Kontakt: {kontakt}", ln=True)
+    pdf.cell(200, 10, txt=f"Střed: {stred}", ln=True)
+    pdf.cell(200, 10, txt=f"Poloměr: {polomer} m", ln=True)
+    pdf.cell(200, 10, txt=f"Počet bodů: {pocet_bodu}", ln=True)
+    pdf.cell(200, 10, txt=f"Barva: {barva}", ln=True)
 
-        st.download_button("📥 Stáhnout PDF", pdf_buffer, file_name="vystup.pdf")
+    pdf_buffer = BytesIO()
+    pdf.output(pdf_buffer)
+    pdf_buffer.seek(0)
+
+    st.download_button("📥 Stáhnout PDF", pdf_buffer, file_name="vystup.pdf")
+
 
 # ---------- Záložka 2: Informace o mně ----------
 with tab2:
