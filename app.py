@@ -1,4 +1,5 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 from fpdf import FPDF
 import numpy as np
 
